@@ -56,4 +56,41 @@
         <item>@string/game_mode_performance</item>
         <item>@string/game_mode_battery</item>
     </string-array>
+
+    <string-array name="touch_sensitivity_entries" translatable="false">
+        <item>@string/tuning_system_default</item>
+        <item>@string/touch_sensitivity_1</item>
+        <item>@string/touch_sensitivity_2</item>
+        <item>@string/touch_sensitivity_3</item>
+        <item>@string/touch_sensitivity_4</item>
+        <item>@string/touch_sensitivity_5</item>
+    </string-array>
+
+    <string-array name="touch_sensitivity_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <!-- Firmware smooth level: higher filters more. -->
+    <string-array name="touch_smoothness_entries" translatable="false">
+        <item>@string/tuning_system_default</item>
+        <item>@string/touch_smoothness_5</item>
+        <item>@string/touch_smoothness_4</item>
+        <item>@string/touch_smoothness_3</item>
+        <item>@string/touch_smoothness_2</item>
+        <item>@string/touch_smoothness_1</item>
+    </string-array>
+
+    <string-array name="touch_smoothness_values" translatable="false">
+        <item>0</item>
+        <item>5</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+    </string-array>
 </resources>

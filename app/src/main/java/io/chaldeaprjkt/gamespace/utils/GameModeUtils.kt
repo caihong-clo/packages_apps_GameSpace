@@ -35,6 +35,7 @@ class GameModeUtils @Inject constructor(private val context: Context) {
 
     private var manager: GameManager? = null
     var activeGame: UserGame? = null
+    var onActiveGameModeChanged: ((Int) -> Unit)? = null
 
     fun bind(manager: GameManager) {
         this.manager = manager
@@ -60,6 +61,7 @@ class GameModeUtils @Inject constructor(private val context: Context) {
         val packageName = activeGame?.packageName ?: return
         manager?.setGameMode(packageName, mode)
         activeGame = setGameModeFor(packageName, systemSettings, mode)
+        onActiveGameModeChanged?.invoke(mode)
     }
 
     fun setGameModeFor(packageName: String, systemSettings: SystemSettings, mode: Int): UserGame {

@@ -172,4 +172,25 @@
     <!-- Game auto-detect -->
     <string name="auto_game_detect_title">Auto game detection</string>
     <string name="auto_game_detect_summary">Automatically add apps marked as games by their developer</string>
+    <!-- Device tuning (OPlus touch firmware) -->
+    <string name="device_tuning_title">Hardware tuning</string>
+    <string name="perf_mode_boost_title">Performance mode boost</string>
+    <string name="perf_mode_boost_summary">Raise CPU and GPU clocks while a game set to Performance is running. Uses more battery and heat; thermal limits still apply</string>
+    <string name="touch_game_mode_title">Game touch mode</string>
+    <string name="touch_game_mode_summary">Raise the touch report rate and use the touch firmware\'s game mode while playing</string>
+    <string name="touch_sensitivity_title">Touch sensitivity</string>
+    <string name="touch_smoothness_title">Swipe response</string>
+    <string name="refresh_rate_lock_title">Refresh rate while gaming</string>
+    <string name="tuning_system_default">System default</string>
+    <string name="touch_sensitivity_1">Lowest</string>
+    <string name="touch_sensitivity_2">Low</string>
+    <string name="touch_sensitivity_3">Medium</string>
+    <string name="touch_sensitivity_4">High</string>
+    <string name="touch_sensitivity_5">Highest</string>
+    <string name="touch_smoothness_5">Smoothest</string>
+    <string name="touch_smoothness_4">Smooth</string>
+    <string name="touch_smoothness_3">Balanced</string>
+    <string name="touch_smoothness_2">Responsive</string>
+    <string name="touch_smoothness_1">Fastest</string>
+    <string name="refresh_rate_value"><xliff:g id="rate">%1$d</xliff:g> Hz</string>
  </resources>

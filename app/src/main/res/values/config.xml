@@ -15,4 +15,9 @@
   -->
 
 <resources>
+    <!-- Whether the OPlus touch firmware and refresh rate game tuning is offered.
+         Enabled by the device overlay on supported OnePlus devices only. -->
+    <bool name="config_supportOplusGameTuning">false</bool>
+    <!-- Value written to the OPlus game switch touch node while a game runs. -->
+    <string name="config_oplusTouchGameModeValue" translatable="false">1</string>
 </resources>

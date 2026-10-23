@@ -43,6 +43,46 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="gamespace_device_tuning"
+        android:title="@string/device_tuning_title">
+
+        <SwitchPreferenceCompat
+            android:key="gamespace_perf_mode_boost"
+            android:title="@string/perf_mode_boost_title"
+            android:summary="@string/perf_mode_boost_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            android:key="gamespace_touch_game_mode"
+            android:title="@string/touch_game_mode_title"
+            android:summary="@string/touch_game_mode_summary"
+            android:defaultValue="true" />
+
+        <ListPreference
+            android:key="gamespace_touch_sensitivity"
+            android:title="@string/touch_sensitivity_title"
+            android:summary="%s"
+            android:entries="@array/touch_sensitivity_entries"
+            android:entryValues="@array/touch_sensitivity_values"
+            android:defaultValue="0" />
+
+        <ListPreference
+            android:key="gamespace_touch_smoothness"
+            android:title="@string/touch_smoothness_title"
+            android:summary="%s"
+            android:entries="@array/touch_smoothness_entries"
+            android:entryValues="@array/touch_smoothness_values"
+            android:defaultValue="0" />
+
+        <ListPreference
+            android:key="gamespace_refresh_rate_lock"
+            android:title="@string/refresh_rate_lock_title"
+            android:summary="%s"
+            android:defaultValue="0" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="in_game_preferences"
         android:title="@string/in_game_preferences_title">
 

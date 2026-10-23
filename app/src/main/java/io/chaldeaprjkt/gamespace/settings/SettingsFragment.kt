@@ -16,18 +16,22 @@
 package io.chaldeaprjkt.gamespace.settings
 
 import android.content.Intent
+import android.hardware.display.DisplayManager
 import android.os.Bundle
+import android.view.Display
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import androidx.preference.ListPreference
+import androidx.preference.PreferenceCategory
 
 import com.android.settingslib.widget.SettingsBasePreferenceFragment
 
 import dagger.hilt.android.AndroidEntryPoint
 
 import io.chaldeaprjkt.gamespace.R
+import io.chaldeaprjkt.gamespace.data.DeviceTuning
 import io.chaldeaprjkt.gamespace.data.GameOptimizationManager
 import io.chaldeaprjkt.gamespace.preferences.AppListPreferences
 import io.chaldeaprjkt.gamespace.preferences.QuickStartAppPreference
@@ -45,6 +49,9 @@ class SettingsFragment : Hilt_SettingsFragment(),
 
     @Inject
     lateinit var gameOptimization: GameOptimizationManager
+
+    @Inject
+    lateinit var deviceTuning: DeviceTuning
 
     private val selectorResult =
         registerForActivityResult(
@@ -92,6 +99,52 @@ class SettingsFragment : Hilt_SettingsFragment(),
             isChecked = gameOptimization.isCacheManagementEnabled
             onPreferenceChangeListener = this@SettingsFragment
         }
+
+        setupDeviceTuning()
+    }
+
+    private fun setupDeviceTuning() {
+        val category = findPreference<PreferenceCategory>(DeviceTuning.KEY_CATEGORY) ?: return
+        if (!deviceTuning.isEnabled) {
+            preferenceScreen.removePreference(category)
+            return
+        }
+        category.isVisible = false
+        setupRefreshRates()
+        Thread {
+            val gameMode = deviceTuning.isNodeSupported(DeviceTuning.NODE_GAME_SWITCH)
+            val sensitivity = deviceTuning.isNodeSupported(DeviceTuning.NODE_SENSITIVITY)
+            val smoothness = deviceTuning.isNodeSupported(DeviceTuning.NODE_SMOOTHNESS)
+            activity?.runOnUiThread {
+                if (!isAdded) return@runOnUiThread
+                findPreference<Preference>(DeviceTuning.KEY_TOUCH_GAME_MODE)?.isVisible = gameMode
+                findPreference<Preference>(DeviceTuning.KEY_TOUCH_SENSITIVITY)?.isVisible =
+                    sensitivity
+                findPreference<Preference>(DeviceTuning.KEY_TOUCH_SMOOTHNESS)?.isVisible =
+                    smoothness
+                category.isVisible = true
+            }
+        }.start()
+    }
+
+    private fun setupRefreshRates() {
+        val pref = findPreference<ListPreference>(DeviceTuning.KEY_REFRESH_RATE) ?: return
+        val display = requireContext().getSystemService(DisplayManager::class.java)
+            .getDisplay(Display.DEFAULT_DISPLAY)
+        val rates = display?.supportedModes
+            ?.map { Math.round(it.refreshRate) }
+            ?.filter { it >= MIN_LOCKED_REFRESH_RATE }
+            ?.distinct()
+            ?.sortedDescending()
+            .orEmpty()
+        if (rates.isEmpty()) {
+            pref.isVisible = false
+            return
+        }
+        pref.entries = (listOf(getString(R.string.tuning_system_default)) +
+            rates.map { getString(R.string.refresh_rate_value, it) }).toTypedArray()
+        pref.entryValues = (listOf("0") + rates.map { it.toString() }).toTypedArray()
+        if (pref.findIndexOfValue(pref.value) < 0) pref.value = "0"
     }
 
     override fun onResume() {
@@ -130,5 +183,9 @@ class SettingsFragment : Hilt_SettingsFragment(),
             }
         }
         return false
+    }
+
+    companion object {
+        private const val MIN_LOCKED_REFRESH_RATE = 60
     }
 }

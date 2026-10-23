@@ -34,6 +34,7 @@ import com.android.axion.platform.AxPlatformClient
 import dagger.hilt.android.AndroidEntryPoint
 import com.google.gson.Gson
 import io.chaldeaprjkt.gamespace.data.AppSettings
+import io.chaldeaprjkt.gamespace.data.DeviceTuning
 import io.chaldeaprjkt.gamespace.data.GameSession
 import io.chaldeaprjkt.gamespace.data.SystemSettings
 import io.chaldeaprjkt.gamespace.gamebar.brightness.BrightnessInteractor
@@ -58,6 +59,7 @@ class SessionService : Hilt_SessionService() {
     @Inject lateinit var fpsInteractor: FpsInteractor
     @Inject lateinit var tileRepository: TileRepository
     @Inject lateinit var gson: Gson
+    @Inject lateinit var deviceTuning: DeviceTuning
 
     private var currentPackage: String? = null
     private lateinit var gameManager: GameManager
@@ -76,8 +78,14 @@ class SessionService : Hilt_SessionService() {
         platform = AxPlatformClient.getInstance()
         platform.init(this)
 
+        // Clears tuning left behind if the previous session was killed mid-game.
+        deviceTuning.restore()
+
         gameManager = getSystemService(Context.GAME_SERVICE) as GameManager
         gameModeUtils.bind(gameManager)
+        gameModeUtils.onActiveGameModeChanged = { mode ->
+            deviceTuning.setPerformanceBoost(mode == GameManager.GAME_MODE_PERFORMANCE)
+        }
 
         tileRepository.init(platform)
 
@@ -153,6 +161,8 @@ class SessionService : Hilt_SessionService() {
         
         applyAutoDnd()
 
+        deviceTuning.applyForGame()
+
         sidebar.onGameStart(packageName)
 
         callListener.init()
@@ -165,6 +175,10 @@ class SessionService : Hilt_SessionService() {
         session.unregister()
         callListener.destroy()
         restoreAutoDnd()
+        if (currentPackage != null) {
+            deviceTuning.setPerformanceBoost(false)
+            deviceTuning.restore()
+        }
 
         currentPackage = null
     }
@@ -198,12 +212,14 @@ class SessionService : Hilt_SessionService() {
         if (availableModes.contains(preferred)) {
             gameManager.setGameMode(app, preferred)
         }
+        deviceTuning.setPerformanceBoost(preferred == GameManager.GAME_MODE_PERFORMANCE)
     }
 
     override fun onDestroy() {
         Log.d(TAG, "SessionService destroyed")
         stopGameSession()
         tileRepository.dispose()
+        gameModeUtils.onActiveGameModeChanged = null
         gameModeUtils.unbind()
         danmakuService.destroy()
         super.onDestroy()
